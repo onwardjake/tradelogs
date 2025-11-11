@@ -1,0 +1,57 @@
+<StanReginCd>
+    <head>
+        <totalCount>493</totalCount>
+        <numOfRows>3</numOfRows>
+        <pageNo>1</pageNo>
+        <type>XML</type>
+        <RESULT>
+            <resultCode>INFO-0</resultCode>
+            <resultMsg>NOMAL SERVICE</resultMsg>
+        </RESULT>
+    </head>
+    <row>
+        <region_cd>1171000000</region_cd>
+        <sido_cd>11</sido_cd>
+        <sgg_cd>710</sgg_cd>
+        <umd_cd>000</umd_cd>
+        <ri_cd>00</ri_cd>
+        <locatjumin_cd>1171000000</locatjumin_cd>
+        <locatjijuk_cd>1171000000</locatjijuk_cd>
+        <locatadd_nm>서울특별시 송파구</locatadd_nm>
+        <locat_order>24</locat_order>
+        <locat_rm/>
+        <locathigh_cd>1100000000</locathigh_cd>
+        <locallow_nm>송파구</locallow_nm>
+        <adpt_de/>
+    </row>
+    <row>
+        <region_cd>1171010100</region_cd>
+        <sido_cd>11</sido_cd>
+        <sgg_cd>710</sgg_cd>
+        <umd_cd>101</umd_cd>
+        <ri_cd>00</ri_cd>
+        <locatjumin_cd>1171010100</locatjumin_cd>
+        <locatjijuk_cd>1171010100</locatjijuk_cd>
+        <locatadd_nm>서울특별시 송파구 잠실동</locatadd_nm>
+        <locat_order>1</locat_order>
+        <locat_rm/>
+        <locathigh_cd>1171000000</locathigh_cd>
+        <locallow_nm>잠실동</locallow_nm>
+        <adpt_de/>
+    </row>
+    <row>
+        <region_cd>1171010200</region_cd>
+        <sido_cd>11</sido_cd>
+        <sgg_cd>710</sgg_cd>
+        <umd_cd>102</umd_cd>
+        <ri_cd>00</ri_cd>
+        <locatjumin_cd>1171010200</locatjumin_cd>
+        <locatjijuk_cd>1171010200</locatjijuk_cd>
+        <locatadd_nm>서울특별시 송파구 신천동</locatadd_nm>
+        <locat_order>2</locat_order>
+        <locat_rm/>
+        <locathigh_cd>1171000000</locathigh_cd>
+        <locallow_nm>신천동</locallow_nm>
+        <adpt_de/>
+    </row>
+</StanReginCd>

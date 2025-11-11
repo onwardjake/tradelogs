@@ -2,7 +2,7 @@ package com.jake.tradelogs.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "com.jake.landtrade.config.lawd")
+@ConfigurationProperties(prefix = "com.jake.tradelogs.config.lawd")
 public record ApiPropsLawd(
     String baseUrl,
     String servicePath,

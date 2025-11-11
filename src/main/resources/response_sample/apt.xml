@@ -1,0 +1,115 @@
+<response>
+    <header>
+        <resultCode>000</resultCode>
+        <resultMsg>OK</resultMsg>
+    </header>
+    <body>
+        <items>
+            <item>
+                <aptDong> </aptDong>
+                <aptNm>경희궁자이(2단지)</aptNm>
+                <aptSeq>11110-2445</aptSeq>
+                <bonbun>0199</bonbun>
+                <bubun>0000</bubun>
+                <buildYear>2017</buildYear>
+                <buyerGbn>개인</buyerGbn>
+                <cdealDay> </cdealDay>
+                <cdealType> </cdealType>
+                <dealAmount>367,000</dealAmount>
+                <dealDay>14</dealDay>
+                <dealMonth>10</dealMonth>
+                <dealYear>2025</dealYear>
+                <dealingGbn>중개거래</dealingGbn>
+                <estateAgentSggNm>서울 종로구</estateAgentSggNm>
+                <excluUseAr>138.6533</excluUseAr>
+                <floor>7</floor>
+                <jibun>199</jibun>
+                <landCd>1</landCd>
+                <landLeaseholdGbn>N</landLeaseholdGbn>
+                <rgstDate> </rgstDate>
+                <roadNm>송월길</roadNm>
+                <roadNmBonbun>00099</roadNmBonbun>
+                <roadNmBubun>00000</roadNmBubun>
+                <roadNmCd>4100192</roadNmCd>
+                <roadNmSeq>01</roadNmSeq>
+                <roadNmSggCd>11110</roadNmSggCd>
+                <roadNmbCd> </roadNmbCd>
+                <sggCd>11110</sggCd>
+                <slerGbn>개인</slerGbn>
+                <umdCd>17900</umdCd>
+                <umdNm>홍파동</umdNm>
+            </item>
+            <item>
+                <aptDong> </aptDong>
+                <aptNm>인왕산아이파크</aptNm>
+                <aptSeq>11110-2212</aptSeq>
+                <bonbun>0060</bonbun>
+                <bubun>0000</bubun>
+                <buildYear>2008</buildYear>
+                <buyerGbn>개인</buyerGbn>
+                <cdealDay> </cdealDay>
+                <cdealType> </cdealType>
+                <dealAmount>164,500</dealAmount>
+                <dealDay>17</dealDay>
+                <dealMonth>10</dealMonth>
+                <dealYear>2025</dealYear>
+                <dealingGbn>중개거래</dealingGbn>
+                <estateAgentSggNm>서울 종로구</estateAgentSggNm>
+                <excluUseAr>114.931</excluUseAr>
+                <floor>16</floor>
+                <jibun>60</jibun>
+                <landCd>1</landCd>
+                <landLeaseholdGbn>N</landLeaseholdGbn>
+                <rgstDate> </rgstDate>
+                <roadNm>통일로18길</roadNm>
+                <roadNmBonbun>00009</roadNmBonbun>
+                <roadNmBubun>00000</roadNmBubun>
+                <roadNmCd>4100482</roadNmCd>
+                <roadNmSeq>01</roadNmSeq>
+                <roadNmSggCd>11110</roadNmSggCd>
+                <roadNmbCd>0</roadNmbCd>
+                <sggCd>11110</sggCd>
+                <slerGbn>개인</slerGbn>
+                <umdCd>18700</umdCd>
+                <umdNm>무악동</umdNm>
+            </item>
+            <item>
+                <aptDong> </aptDong>
+                <aptNm>일성빌라트</aptNm>
+                <aptSeq>11110-77</aptSeq>
+                <bonbun>0145</bonbun>
+                <bubun>0005</bubun>
+                <buildYear>1996</buildYear>
+                <buyerGbn>개인</buyerGbn>
+                <cdealDay> </cdealDay>
+                <cdealType> </cdealType>
+                <dealAmount>66,500</dealAmount>
+                <dealDay>15</dealDay>
+                <dealMonth>10</dealMonth>
+                <dealYear>2025</dealYear>
+                <dealingGbn>중개거래</dealingGbn>
+                <estateAgentSggNm>서울 종로구</estateAgentSggNm>
+                <excluUseAr>84.99</excluUseAr>
+                <floor>5</floor>
+                <jibun>145-5</jibun>
+                <landCd>1</landCd>
+                <landLeaseholdGbn>N</landLeaseholdGbn>
+                <rgstDate> </rgstDate>
+                <roadNm>평창문화로</roadNm>
+                <roadNmBonbun>00119</roadNmBonbun>
+                <roadNmBubun>00000</roadNmBubun>
+                <roadNmCd>3100023</roadNmCd>
+                <roadNmSeq>01</roadNmSeq>
+                <roadNmSggCd>11110</roadNmSggCd>
+                <roadNmbCd>0</roadNmbCd>
+                <sggCd>11110</sggCd>
+                <slerGbn>개인</slerGbn>
+                <umdCd>18300</umdCd>
+                <umdNm>평창동</umdNm>
+            </item>
+        </items>
+        <numOfRows>3</numOfRows>
+        <pageNo>1</pageNo>
+        <totalCount>74</totalCount>
+    </body>
+</response>
