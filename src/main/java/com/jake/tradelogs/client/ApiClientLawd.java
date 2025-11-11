@@ -21,6 +21,7 @@ public class ApiClientLawd {
     private final ApiPropsLawd props;
     private final WebClient webClient;
 
+    // Open API 접속을 위한 WebClient 객체를 생성한다.
     public ApiClientLawd(ApiPropsLawd props) {
         this.props = props;
 
@@ -36,11 +37,14 @@ public class ApiClientLawd {
         this.webClient = WebClient.builder()
                 .baseUrl(props.baseUrl())
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .defaultHeaders(h -> h.setAccept(List.of(MediaType.APPLICATION_JSON)))
+                .defaultHeaders(h -> h.setAccept(List.of(MediaType.APPLICATION_XML)))
                 .filter(logRequest())
                 .filter(logResponse())
                 .build();
     }
+
+    // Open API에 데이터를 요청해서 받는다.
+
 
     // WebClient에서 Request를 보낼 때 로그를 남긴다
     private static ExchangeFilterFunction logRequest() {
