@@ -10,21 +10,23 @@ import java.util.List;
 응답 구조
 
 StanReginCd
- ├── head (ApiResHeadLawd)
+ ├── head (ApiResLawdHead)
  │    ├── totalCount
  │    ├── numOfRows
  │    ├── pageNo
  │    ├── type
- │    └── result (ApiResultLawd)
- └── rows (List<ApiResRowsLawd>)
+ │    └── result (ApiResLawdHeadResult)
+ └── rows (List<ApiResLawdRows>)
  */
 
 @JacksonXmlRootElement(localName = "StanReginCd")
-public record ApiResponseLawd(
+public record ApiResLawd(
     @JacksonXmlProperty(localName = "head")
-    ApiResHeadLawd head,
+    ApiResLawdHead head,
 
+    // <row>가 반복될 때 감싸는 요소 없이 바로 나열되므로 useWrapping=false
+    // 즉, row들을 감싸주는 상위 요소(ex. <rows><row></row></rpws>없이 <row> 들이 계속 나열되므로 u
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "row")
-    List<ApiResRowsLawd> rows
+    List<ApiResLawdRows> rows
 ) {}

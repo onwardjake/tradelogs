@@ -2,16 +2,15 @@ package com.jake.tradelogs.client;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.jake.tradelogs.config.ApiPropsLawd;
-import com.jake.tradelogs.dto.lawd.ApiResRowsLawd;
-import com.jake.tradelogs.dto.lawd.ApiResponseLawd;
+import com.jake.tradelogs.dto.lawd.ApiResLawdRows;
+import com.jake.tradelogs.dto.lawd.ApiResLawd;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
-import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -31,11 +30,11 @@ public class ApiClientLawd {
 
     // Open API에 데이터를 요청해서 받는다.
     // 메소드 오버라이딩을 해서 type과 지역명을 입력하지 않은 경우에 대한 처리를 한다
-    public ApiResponseLawd getLawdPage(Integer pageNo, Integer numOfRows){
+    public ApiResLawd getLawdPage(Integer pageNo, Integer numOfRows){
         return getLawdPage(pageNo, numOfRows, "xml", "");
     }
 
-    public ApiResponseLawd getLawdPage(Integer pageNo, Integer numOfRows, String type, String locataddNm) {
+    public ApiResLawd getLawdPage(Integer pageNo, Integer numOfRows, String type, String locataddNm) {
 
         String resRaw = "";
 
@@ -47,13 +46,13 @@ public class ApiClientLawd {
             urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode(numOfRows.toString(), "UTF-8")); //*한 페이지 결과 수/
             urlBuilder.append("&" + URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8")); //*호출문서(xml, json) default : xml/
             urlBuilder.append("&" + URLEncoder.encode("locatadd_nm", "UTF-8") + "=" + URLEncoder.encode(locataddNm, "UTF-8")); //*지역주소명/
-            log.info(">> URL: {}", urlBuilder.toString());
+            log.info(">> URL: {}", urlBuilder);
 
+            //URI url = URI.create(urlBuilder.toString());
             URL url = new URL(urlBuilder.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-type", "application/xml");
-            //System.out.println("Response code: " + conn.getResponseCode());
             log.info(">> Response code: {}", conn.getResponseCode());
 
             BufferedReader rd;
@@ -82,20 +81,20 @@ public class ApiClientLawd {
         try {
             // Jackson XmlMapper로 응답을 파싱한다
             log.info(">> Start to parse xml : {}", resRaw);
-            return xmlMapper.readValue(resRaw, ApiResponseLawd.class);
+            return xmlMapper.readValue(resRaw, ApiResLawd.class);
         } catch (Exception e) {
             throw new RuntimeException("XML 파싱 실패: " + e.getMessage(), e);
         }
     }
 
-    public List<ApiResRowsLawd> getPagesLawd(Integer fromPage, Integer toPage, Integer numOfRows){
+    public List<ApiResLawdRows> getPagesLawd(Integer fromPage, Integer toPage, Integer numOfRows){
         log.info(">> Start to parse pages : {}", fromPage.toString() + " to " + toPage.toString());
 
-        List<ApiResRowsLawd> all = new ArrayList<>();
+        List<ApiResLawdRows> all = new ArrayList<>();
 
         // 시작 페이지부터 마지막 페이지까지 페이지 단위로 데이터를 불러와서 all에 추가한다.
         while(fromPage <= toPage){
-            ApiResponseLawd resp = getLawdPage(fromPage, numOfRows);
+            ApiResLawd resp = getLawdPage(fromPage, numOfRows);
             if(resp != null && !resp.rows().isEmpty()){
                 all.addAll(resp.rows());
             }
@@ -106,13 +105,13 @@ public class ApiClientLawd {
     }
 
     // 전체 법정동코드를 가지고 온다.
-    public List<ApiResRowsLawd> getAllLawd() {
+    public List<ApiResLawdRows> getAllLawd() {
         int pageNo = 1;
         int numOfRows = props.defaultPageSize();
-        List<ApiResRowsLawd> all = new ArrayList<>();
+        List<ApiResLawdRows> all = new ArrayList<>();
 
         // 첫번째 페이지 데이터를 요청해서 받아온다
-        ApiResponseLawd first = getLawdPage(pageNo, numOfRows);
+        ApiResLawd first = getLawdPage(pageNo, numOfRows);
 
         // 1번째 페이지 데이터를 all에 추가한다.
         if(first != null && !first.rows().isEmpty())
@@ -122,28 +121,12 @@ public class ApiClientLawd {
         int total = Optional.of(Integer.parseInt(first.head().totalCount())).orElse(0);
         int pageCount = (int) Math.ceil(total/(double)numOfRows);
         for(pageNo = 2; pageNo <= pageCount; pageNo++) {
-            ApiResponseLawd resp = getLawdPage(pageNo, numOfRows);
+            ApiResLawd resp = getLawdPage(pageNo, numOfRows);
             if(resp != null && !resp.rows().isEmpty()){
                 all.addAll(resp.rows());
             }
         }
 
         return all;
-    }
-
-    // WebClient에서 Request를 보낼 때 로그를 남긴다
-    private static ExchangeFilterFunction logRequest() {
-        return ExchangeFilterFunction.ofRequestProcessor(req -> {
-            log.info("WebClient Request: {} {}", req.method(), req.url());
-            return Mono.just(req);
-        });
-    }
-
-    // WebClient에서 Response를 받을 때 로그를 남긴다
-    private static ExchangeFilterFunction logResponse() {
-        return ExchangeFilterFunction.ofResponseProcessor(res -> {
-            log.info("WebClient Response: status={}", res.statusCode());
-            return Mono.just(res);
-        });
     }
 }

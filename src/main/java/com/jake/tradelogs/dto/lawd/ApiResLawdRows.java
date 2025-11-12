@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record ApiResRowsLawd(
+public record ApiResLawdRows(
     @JacksonXmlProperty(localName = "region_cd") String lawd10,
     @JacksonXmlProperty(localName = "sido_cd") String sidoCd,
     @JacksonXmlProperty(localName = "sgg_cd") String sggCd,
