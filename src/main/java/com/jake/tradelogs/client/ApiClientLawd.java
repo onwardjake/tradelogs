@@ -34,6 +34,7 @@ public class ApiClientLawd {
     public ApiResponseLawd getLawdPage(Integer pageNo, Integer numOfRows){
         return getLawdPage(pageNo, numOfRows, "xml", "");
     }
+
     public ApiResponseLawd getLawdPage(Integer pageNo, Integer numOfRows, String type, String locataddNm) {
 
         String resRaw = "";
@@ -87,18 +88,31 @@ public class ApiClientLawd {
         }
     }
 
+    public List<ApiResRowsLawd> getPagesLawd(Integer fromPage, Integer toPage, Integer numOfRows){
+        log.info(">> Start to parse pages : {}", fromPage.toString() + " to " + toPage.toString());
+
+        List<ApiResRowsLawd> all = new ArrayList<>();
+
+        // 시작 페이지부터 마지막 페이지까지 페이지 단위로 데이터를 불러와서 all에 추가한다.
+        while(fromPage <= toPage){
+            ApiResponseLawd resp = getLawdPage(fromPage, numOfRows);
+            if(resp != null && !resp.rows().isEmpty()){
+                all.addAll(resp.rows());
+            }
+            fromPage++;
+        }
+
+        return all;
+    }
+
     // 전체 법정동코드를 가지고 온다.
     public List<ApiResRowsLawd> getAllLawd() {
         int pageNo = 1;
         int numOfRows = props.defaultPageSize();
-        String type = "xml";
-        String locataddNm = "";
+        List<ApiResRowsLawd> all = new ArrayList<>();
 
         // 첫번째 페이지 데이터를 요청해서 받아온다
         ApiResponseLawd first = getLawdPage(pageNo, numOfRows);
-        log.info("first: {}", first);
-
-        List<ApiResRowsLawd> all = new ArrayList<>();
 
         // 1번째 페이지 데이터를 all에 추가한다.
         if(first != null && !first.rows().isEmpty())

@@ -6,6 +6,7 @@ import com.jake.tradelogs.service.LawdService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,5 +20,10 @@ public class LawdController {
     @GetMapping
     public List<ApiResRowsLawd> getAllLawd() {
         return lawdService.getAllLawd();
+    }
+
+    @GetMapping("/getpages")
+    public List<ApiResRowsLawd> getPagesLawd(@RequestParam Integer from, @RequestParam Integer to, @RequestParam Integer numOfRows) {
+        return lawdService.getPagesLawd(from, to, numOfRows);
     }
 }

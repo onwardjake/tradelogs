@@ -16,4 +16,8 @@ public class LawdService {
     public List<ApiResRowsLawd> getAllLawd() {
         return apiClientLawd.getAllLawd();
     }
+
+    public List<ApiResRowsLawd> getPagesLawd(Integer from, Integer to, Integer numOfRows) {
+        return apiClientLawd.getPagesLawd(from, to, numOfRows);
+    }
 }
