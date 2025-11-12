@@ -23,7 +23,7 @@ public class LawdIngestService {
     @Transactional
     public void ingestLawdAll() {
         try{
-            Integer page = 205;
+            Integer page = 1;
             Integer numOfRows = 100;
             while(true){
                 // 한 페이지씩 데이터를 불러서 DB에 계속 적재한다.
