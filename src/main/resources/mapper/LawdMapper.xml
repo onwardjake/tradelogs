@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jake.tradelogs.mapper.LawdMapper">
+
+    <insert id="bulkUpsert">
+        INSERT IGNORE INTO lawd_code (
+        lawd10, sido_cd, sgg_cd, umd_cd, ri_cd,
+        locatjumin_cd, locatjijuk_cd, locatadd_nm,
+        locat_order, locat_rm, locathigh_cd, locallow_nm, adpt_de
+        ) VALUES
+        <foreach collection="list" item="c" separator=",">
+            (
+            #{c.lawd10}, #{c.sidoCd}, #{c.sggCd}, #{c.umdCd}, #{c.riCd},
+            #{c.locatJuminCd}, #{c.locatJijukCd}, #{c.locatAddNm},
+            #{c.locatOrder}, #{c.locatRm}, #{c.locatHighCd}, #{c.localLowNm}, #{c.adptDe}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

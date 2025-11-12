@@ -79,8 +79,13 @@ public class ApiClientLawd {
         }
 
         try {
+            // 데이터없음 에러가 발생하는 경우 <RESULT> <resultCode> <resultMsg> 만 응답한다
+            // row가 없으면 내용을 받지 못한 것이므로 무시한다.
+            if(!resRaw.contains("row"))
+                return null;
+
             // Jackson XmlMapper로 응답을 파싱한다
-            log.info(">> Start to parse xml : {}", resRaw);
+            log.info(">> [ApiClientLawd::getLawdPage] Start to parse xml");
             return xmlMapper.readValue(resRaw, ApiResLawd.class);
         } catch (Exception e) {
             throw new RuntimeException("XML 파싱 실패: " + e.getMessage(), e);
