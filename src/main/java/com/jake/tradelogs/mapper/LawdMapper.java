@@ -9,4 +9,8 @@ import java.util.List;
 @Mapper
 public interface LawdMapper {
     int bulkUpsert(@Param("list") List<LawdItem> list);
+
+    String findLawd5(@Param("lawd5") String lawd5);
+
+    List<String> getAllLawd5();
 }

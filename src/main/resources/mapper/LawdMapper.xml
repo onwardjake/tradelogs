@@ -18,4 +18,11 @@
         </foreach>
     </insert>
 
+    <select id="findLawd5">
+        SELECT name FROM v_lawd5 WHERE lawd5=#{lawd5};
+    </select>
+
+    <select id="getAllLawd5">
+        SELECT lawd5 FROM v_lawd5 ORDER BY lawd5 ASC;
+    </select>
 </mapper>
