@@ -41,7 +41,7 @@ public class AptMapperUtil {
             ati.setDealYear(Integer.parseInt(MapperUtil.clean(src.dealYear())));
             ati.setDealMonth(Integer.parseInt(MapperUtil.clean(src.dealMonth())));
             ati.setDealDay(Integer.parseInt(MapperUtil.clean(src.dealDay())));
-            ati.setDealAmount(Integer.parseInt(MapperUtil.clean(src.dealAmount())));
+            ati.setDealAmount(Integer.parseInt(MapperUtil.removeComma(MapperUtil.clean(src.dealAmount()))));
 
             ati.setRgstDate(MapperUtil.parseDate(MapperUtil.clean(src.rgstDate())));
             ati.setDealingGbn(MapperUtil.clean(src.dealingGbn()));

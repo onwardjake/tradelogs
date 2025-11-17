@@ -123,7 +123,7 @@ public class ApiClientLawd {
             all.addAll(first.rows());
 
         // 2번째 페이지부터 마지막 페이지까지 페이지 단위로 데이터를 불러와서 all에 추가한다.
-        int total = Optional.of(Integer.parseInt(first.head().totalCount())).orElse(0);
+        int total = Optional.ofNullable(first.head().totalCount()).orElse(0);
         int pageCount = (int) Math.ceil(total/(double)numOfRows);
         for(pageNo = 2; pageNo <= pageCount; pageNo++) {
             ApiResLawd resp = getLawdPage(pageNo, numOfRows);

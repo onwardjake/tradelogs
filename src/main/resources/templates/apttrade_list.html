@@ -1,0 +1,159 @@
+<!-- src/main/resources/templates/trades.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>아파트 실거래 조회</title>
+    <style>
+        :root {
+            --bg: #111418;      /* 아주 검정 X */
+            --panel: #161a20;   /* 패널 배경 */
+            --muted: #1d232b;
+            --text: #e6e9ef;    /* 본문 */
+            --sub: #aab2bf;     /* 보조 텍스트 */
+            --accent: #6ea8fe;  /* 포커스 */
+            --ok: #6edff6;
+            --warn: #ffd166;
+            --danger: #ff6b6b;
+            --border: #2a313a;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 24px;
+            background: var(--bg); color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+        }
+        .wrap { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 20px; margin: 0 0 16px; color: #f0f3f8; }
+        .card {
+            background: var(--panel); border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px; margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.25);
+        }
+        .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+        label { display:block; font-size: 12px; color: var(--sub); margin-bottom:6px;}
+        select, input[type=number] {
+            width: 100%; background: var(--muted); color: var(--text);
+            border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
+            outline: none;
+        }
+        select:focus, input[type=number]:focus { border-color: var(--accent); }
+        .row { display:flex; gap:10px; align-items:center; }
+        .btn {
+            background: var(--accent); color:#0b1220; border: none; border-radius: 10px;
+            padding: 10px 16px; font-weight: 600; cursor: pointer;
+        }
+        .btn:disabled { opacity: .6; cursor: not-allowed; }
+        .table {
+            width: 100%; border-collapse: collapse; margin-top: 6px;
+        }
+        .table th, .table td {
+            border-bottom: 1px solid var(--border);
+            padding: 10px 8px; font-size: 13px; text-align: left;
+        }
+        .table th { color: #cbd5e1; font-weight: 600; background: #121821; position: sticky; top:0;}
+        .muted { color: var(--sub); }
+        .pagination { display:flex; gap:6px; justify-content: center; margin-top: 12px; }
+        .page-btn {
+            padding:6px 10px; border:1px solid var(--border); background: var(--muted); color: var(--text);
+            border-radius: 8px; text-decoration: none;
+        }
+        .page-btn.active { background: var(--accent); color: #10121a; border-color: transparent; }
+        .hint { font-size: 12px; color: var(--sub); }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1>아파트 실거래 조회</h1>
+
+    <div class="card">
+        <div class="row" style="justify-content: space-between;">
+            <div class="muted">총 <strong th:text="${total}">0</strong> 건</div>
+            <div class="muted">페이지 <strong th:text="${pageNo}">1</strong> / <span th:text="${totalPages}">1</span></div>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>법정동코드</th>
+                <th>아파트명</th>
+                <th>전용면적</th>
+                <th>거래일</th>
+                <th>금액(만원)</th>
+                <th>층</th>
+                <th>건축년도</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${rows}">
+                <td th:text="${r.lawdCd}"></td>
+                <td th:text="${r.aptNm}"></td>
+                <td th:text="${r.excluUseAr}"></td>
+                <td th:text="${r.dealYear + '-' + r.dealMonth + '-' + r.dealDay}"></td>
+                <td th:text="${r.dealAmount}"></td>
+                <td th:text="${r.floor}"></td>
+                <td th:text="${r.buildYear}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(rows)}">
+                <td colspan="7" class="muted">조회 결과가 없습니다.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- 페이지네이션 -->
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:each="p : ${#numbers.sequence(1, totalPages)}"
+               th:classappend="${p == pageNo} ? 'page-btn active' : 'page-btn'"
+               th:href="@{/trades(
+              lawdCd=${filter.lawdCd},
+              aptNm=${filter.aptNm},
+              dealYear=${filter.dealYear},
+              dealMonth=${filter.dealMonth},
+              areaBucket=${filter.areaBucket},
+              minAmount=${filter.minAmount},
+              maxAmount=${filter.maxAmount},
+              buildYear=${filter.buildYear},
+              pageNo=${p},
+              pageSize=${pageSize}
+          )}"
+               th:text="${p}">1</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const lawdSel = document.getElementById('lawdCd');
+    const aptSel  = document.getElementById('aptNm');
+    const buildYearSel = document.getElementById('buildYear');
+
+    async function updateAptAndBuildYears(lawdCd) {
+        // 아파트명
+        aptSel.innerHTML = '<option value="">전체</option>';
+        if (lawdCd) {
+            const res = await fetch('/api/meta/apts?lawdCd=' + encodeURIComponent(lawdCd));
+            const list = await res.json();
+            list.forEach(nm => {
+                const opt = document.createElement('option');
+                opt.value = nm; opt.textContent = nm;
+                aptSel.appendChild(opt);
+            });
+        }
+        // 건축년도
+        buildYearSel.innerHTML = '<option value="">전체</option>';
+        if (lawdCd) {
+            const res2 = await fetch('/api/meta/buildYears?lawdCd=' + encodeURIComponent(lawdCd));
+            const years = await res2.json();
+            years.forEach(y => {
+                const opt = document.createElement('option');
+                opt.value = y; opt.textContent = y;
+                buildYearSel.appendChild(opt);
+            });
+        }
+    }
+
+    lawdSel && lawdSel.addEventListener('change', e => {
+        updateAptAndBuildYears(e.target.value);
+    });
+</script>
+</body>
+</html>

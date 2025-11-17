@@ -12,6 +12,11 @@ public class MapperUtil {
         return s.isEmpty() ? null : s;
     }
 
+    public static String removeComma(String s) {
+        if (s == null) return null;
+        return s.replace(",", "").replace(" ", "");
+    }
+
     public static LocalDate parseDate(String s) {
         try {
             if (s == null || s.isBlank()) return null;

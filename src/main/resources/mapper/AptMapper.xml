@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jake.tradelogs.mapper.AptMapper">
+
+    <insert id="bulkUpsert">
+        <if test="list != null and list.size() > 0">
+            INSERT IGNORE INTO apt_trade (
+            sgg_cd, umd_cd, umd_nm, jibun, land_cd, bonbun, bubun,
+            road_nm, road_nm_sgg_cd, road_nm_cd, road_nm_seq, road_nmb_cd, road_nm_bonbun, road_nm_bubun,
+            apt_nm, apt_seq, apt_dong, floor, exclu_use_ar, build_year,
+            deal_year, deal_month, deal_day, deal_amount,
+            rgst_date, dealing_gbn, estate_agent_sgg_nm, sler_gbn, buyer_gbn, land_leasehold_gbn, cdeal_type, cdeal_day
+            ) VALUES
+            <foreach collection="list" item="c" separator=",">
+                (
+                #{c.sggCd}, #{c.umdCd}, #{c.umdNm}, #{c.jibun}, #{c.landCd}, #{c.bonbun}, #{c.bubun},
+                #{c.roadNm}, #{c.roadNmSggCd}, #{c.roadNmCd}, #{c.roadNmSeq}, #{c.roadNmbCd}, #{c.roadNmBonbun}, #{c.roadNmBubun},
+                #{c.aptNm}, #{c.aptSeq}, #{c.aptDong}, #{c.floor}, #{c.excluUseAr}, #{c.buildYear},
+                #{c.dealYear}, #{c.dealMonth}, #{c.dealDay}, #{c.dealAmount},
+                #{c.rgstDate}, #{c.dealingGbn}, #{c.estateAgentSggNm}, #{c.slerGbn}, #{c.buyerGbn}, #{c.landLeaseholdGbn}, #{c.cdealType}, #{c.cdealDay}
+                )
+            </foreach>
+        </if>
+    </insert>
+
+    <select id="selectAptTrade">
+        SELECT a.apt_nm, a.apt_dong, l.name, a.exclu_use_ar, a.floor, a.deal_amount,
+               STR_TO_DATE(CONCAT(a.deal_year, '-', LPAD(a.deal_month, 2, '0'), '-', LPAD(a.deal_day, 2, '0')), '%Y-%m-%d'),
+               a.build_year, a.dealing_gbn, a.cdeal_type
+        FROM apt_trade a
+                 INNER JOIN v_lawd5 l
+                            ON a.sgg_cd = l.lawd5
+        WHERE a.sgg_cd = #{sggCd}
+
+    </select>
+
+    <select id="getCount" parameterType="map" resultType="long">
+        SELECT COUNT(*)
+            FROM apt_trade
+            <if test="sggCd != null and sggCd != ''">
+                WHERE sgg_cd = #{sggCd}
+            </if>
+    </select>
+
+</mapper>
