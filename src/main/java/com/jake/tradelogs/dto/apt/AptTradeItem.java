@@ -6,6 +6,10 @@ import java.time.LocalDate;
 
 @Data
 public class AptTradeItem {
+    private Long id;
+    private String sggNm;
+    private LocalDate dealDate;
+
     private String sggCd;
     private String umdCd;
     private String umdNm;

@@ -2,6 +2,43 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jake.tradelogs.mapper.AptMapper">
+    <resultMap id="AptTradeItem" type="com.jake.tradelogs.dto.apt.AptTradeItem">
+        <id     property="id"           column="id" />
+        <result property="sggNm"        column="sggNm" />
+        <result property="dealDate"     column="dealDate" />
+        <result property="sggCd"        column="sgg_cd"/>
+        <result property="umdCd"             column="umd_cd"/>
+        <result property="umdNm"             column="umd_nm"/>
+        <result property="jibun"             column="jibun"/>
+        <result property="landCd"             column="land_cd"/>
+        <result property="bonbun"             column="bonbun"/>
+        <result property="bubun"             column="bubun"/>
+        <result property="roadNm"             column="road_nm"/>
+        <result property="roadNmSggCd"             column="road_nm_sgg_cd"/>
+        <result property="roadNmCd"             column="road_nm_cd"/>
+        <result property="roadNmSeq"             column="road_nm_seq"/>
+        <result property="roadNmbCd"             column="road_nmb_cd"/>
+        <result property="roadNmBonbun"             column="road_nm_bonbun"/>
+        <result property="roadNmBubun"             column="road_nm_bubun"/>
+        <result property="aptNm"             column="apt_nm"/>
+        <result property="aptSeq"             column="apt_seq"/>
+        <result property="aptDong"             column="apt_dong"/>
+        <result property="floor"             column="floor"/>
+        <result property="excluUseAr"             column="exclu_use_ar"/>
+        <result property="buildYear"             column="build_year"/>
+        <result property="dealYear"             column="deal_year"/>
+        <result property="dealMonth"             column="deal_month"/>
+        <result property="dealDay"             column="deal_day"/>
+        <result property="dealAmount"             column="deal_amount"/>
+        <result property="rgstDate"             column="rgst_date"/>
+        <result property="dealingGbn"             column="dealing_gbn"/>
+        <result property="estateAgentSggNm"             column="estate_agent_sgg_nm"/>
+        <result property="slerGbn"             column="sler_gbn"/>
+        <result property="buyerGbn"             column="buyer_gbn"/>
+        <result property="landLeaseholdGbn"             column="land_leasehold_gbn"/>
+        <result property="cdealType"             column="cdeal_type"/>
+        <result property="cdealDay"             column="cdeal_day"/>
+    </resultMap>
 
     <insert id="bulkUpsert">
         <if test="list != null and list.size() > 0">
@@ -23,17 +60,55 @@
             </foreach>
         </if>
     </insert>
+       <select id="getAptTradeItems" parameterType="map" resultMap="AptTradeItem">
+           SELECT
+               a.id,
+               l.name AS sggNm,
+               STR_TO_DATE(CONCAT(a.deal_year, '-', LPAD(a.deal_month, 2, '0'), '-', LPAD(a.deal_day, 2, '0')), '%Y-%m-%d') AS dealDate,
 
-    <select id="selectAptTrade">
-        SELECT a.apt_nm, a.apt_dong, l.name, a.exclu_use_ar, a.floor, a.deal_amount,
-               STR_TO_DATE(CONCAT(a.deal_year, '-', LPAD(a.deal_month, 2, '0'), '-', LPAD(a.deal_day, 2, '0')), '%Y-%m-%d'),
-               a.build_year, a.dealing_gbn, a.cdeal_type
-        FROM apt_trade a
-                 INNER JOIN v_lawd5 l
-                            ON a.sgg_cd = l.lawd5
-        WHERE a.sgg_cd = #{sggCd}
+               a.sgg_cd,
+               a.umd_cd,
+               a.umd_nm,
+               a.jibun,
+               a.land_cd,
+               a.bonbun,
+               a.bubun,
 
-    </select>
+               a.road_nm,
+               a.road_nm_sgg_cd,
+               a.road_nm_cd,
+               a.road_nm_seq,
+               a.road_nmb_cd,
+               a.road_nm_bonbun,
+               a.road_nm_bubun,
+
+               a.apt_nm,
+               a.apt_seq,
+               a.apt_dong,
+               a.floor,
+               a.exclu_use_ar,
+               a.build_year,
+
+               a.deal_year,
+               a.deal_month,
+               a.deal_day,
+               a.deal_amount,
+
+               a.rgst_date,
+               a.dealing_gbn,
+               a.estate_agent_sgg_nm,
+               a.sler_gbn,
+               a.buyer_gbn,
+               a.land_leasehold_gbn,
+               a.cdeal_type,
+               a.cdeal_day
+
+           FROM apt_trade a
+                    INNER JOIN v_lawd5 l
+                               ON a.sgg_cd = l.lawd5
+           WHERE a.sgg_cd = #{sggCd}
+           LIMIT #{limit} OFFSET #{offset}
+       </select>
 
     <select id="getCount" parameterType="map" resultType="long">
         SELECT COUNT(*)
