@@ -69,32 +69,36 @@
     <div class="card">
         <div class="row" style="justify-content: space-between;">
             <div class="muted">총 <strong th:text="${total}">0</strong> 건</div>
-            <div class="muted">페이지 <strong th:text="${pageNo}">1</strong> / <span th:text="${totalPages}">1</span></div>
+            <div class="muted">페이지 <strong th:text="${page}">1</strong> / <span th:text="${totalPages}">1</span></div>
         </div>
 
         <table class="table">
             <thead>
             <tr>
-                <th>법정동코드</th>
-                <th>아파트명</th>
-                <th>전용면적</th>
-                <th>거래일</th>
-                <th>금액(만원)</th>
+                <th>아파트</th>
                 <th>층</th>
+                <th>전용면적(제곱미터)</th>
+                <th>금액 (만원)</th>
+                <th>거래일</th>
+                <th>지역 (시군구)</th>
+                <th>지역 (읍면동)</th>
                 <th>건축년도</th>
+                <th>취소여부</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="r : ${rows}">
-                <td th:text="${r.lawdCd}"></td>
-                <td th:text="${r.aptNm}"></td>
-                <td th:text="${r.excluUseAr}"></td>
-                <td th:text="${r.dealYear + '-' + r.dealMonth + '-' + r.dealDay}"></td>
-                <td th:text="${r.dealAmount}"></td>
-                <td th:text="${r.floor}"></td>
-                <td th:text="${r.buildYear}"></td>
+            <tr th:each="l : ${list}">
+                <td th:text="${l.aptNm}"></td>
+                <td th:text="${l.floor}"></td>
+                <td th:text="${l.excluUseAr}"></td>
+                <td th:text="${l.dealAmount}"></td>
+                <td th:text="${l.dealDate}"></td>
+                <td th:text="${l.sggNm}"></td>
+                <td th:text="${l.umdNm}"></td>
+                <td th:text="${l.buildYear}"></td>
+                <td th:text="${l.cdealType == null} ? '정상':'취소'"></td>
             </tr>
-            <tr th:if="${#lists.isEmpty(rows)}">
+            <tr th:if="${#lists.isEmpty(list)}">
                 <td colspan="7" class="muted">조회 결과가 없습니다.</td>
             </tr>
             </tbody>
@@ -103,57 +107,16 @@
         <!-- 페이지네이션 -->
         <div class="pagination" th:if="${totalPages > 1}">
             <a th:each="p : ${#numbers.sequence(1, totalPages)}"
-               th:classappend="${p == pageNo} ? 'page-btn active' : 'page-btn'"
-               th:href="@{/trades(
-              lawdCd=${filter.lawdCd},
-              aptNm=${filter.aptNm},
-              dealYear=${filter.dealYear},
-              dealMonth=${filter.dealMonth},
-              areaBucket=${filter.areaBucket},
-              minAmount=${filter.minAmount},
-              maxAmount=${filter.maxAmount},
-              buildYear=${filter.buildYear},
-              pageNo=${p},
-              pageSize=${pageSize}
+               th:classappend="${p == page} ? 'page-btn active' : 'page-btn'"
+               th:href="@{/apt/trades(
+                    sggCd=${param.sggCd},
+                    page=${p},
+                    size=${size}
           )}"
                th:text="${p}">1</a>
         </div>
     </div>
 </div>
 
-<script>
-    const lawdSel = document.getElementById('lawdCd');
-    const aptSel  = document.getElementById('aptNm');
-    const buildYearSel = document.getElementById('buildYear');
-
-    async function updateAptAndBuildYears(lawdCd) {
-        // 아파트명
-        aptSel.innerHTML = '<option value="">전체</option>';
-        if (lawdCd) {
-            const res = await fetch('/api/meta/apts?lawdCd=' + encodeURIComponent(lawdCd));
-            const list = await res.json();
-            list.forEach(nm => {
-                const opt = document.createElement('option');
-                opt.value = nm; opt.textContent = nm;
-                aptSel.appendChild(opt);
-            });
-        }
-        // 건축년도
-        buildYearSel.innerHTML = '<option value="">전체</option>';
-        if (lawdCd) {
-            const res2 = await fetch('/api/meta/buildYears?lawdCd=' + encodeURIComponent(lawdCd));
-            const years = await res2.json();
-            years.forEach(y => {
-                const opt = document.createElement('option');
-                opt.value = y; opt.textContent = y;
-                buildYearSel.appendChild(opt);
-            });
-        }
-    }
-
-    lawdSel && lawdSel.addEventListener('change', e => {
-        updateAptAndBuildYears(e.target.value);
-    });
-</script>
 </body>
 </html>
