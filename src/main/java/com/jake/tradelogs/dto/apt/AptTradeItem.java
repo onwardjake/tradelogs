@@ -30,7 +30,7 @@ public class AptTradeItem {
     private String aptSeq;
     private String aptDong;
     private String floor;
-    private String excluUseAr;
+    private Double excluUseAr;
     private String buildYear;
 
     private Integer dealYear;

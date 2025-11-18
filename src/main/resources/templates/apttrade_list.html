@@ -31,6 +31,8 @@
             box-shadow: 0 4px 12px rgba(0,0,0,.25);
         }
         .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+        .filter-grid {grid-template-columns: repeat(6, 1fr); align-items: end;}
+        .right-align {text-align: right;}
         label { display:block; font-size: 12px; color: var(--sub); margin-bottom:6px;}
         select, input[type=number] {
             width: 100%; background: var(--muted); color: var(--text);
@@ -51,6 +53,7 @@
             border-bottom: 1px solid var(--border);
             padding: 10px 8px; font-size: 13px; text-align: left;
         }
+        .table td.num {text-align: right; font-variant-numeric: tabular-nums; /* 숫자 정렬 안정적으로 */}
         .table th { color: #cbd5e1; font-weight: 600; background: #121821; position: sticky; top:0;}
         .muted { color: var(--sub); }
         .pagination { display:flex; gap:6px; justify-content: center; margin-top: 12px; }
@@ -67,6 +70,30 @@
     <h1>아파트 실거래 조회</h1>
 
     <div class="card">
+        <div class="muted">검색 필터</div>
+            <form method="get" th:action="@{/apt/trades}" th:object="${filter}">
+                <div class="grid filter-grid">
+                    <div>
+                        <label>시/군/구</label>
+                        <select th:field="*{sggCd}">
+                            <option value="">-- 시군구 선택 --</option>
+                            <option th:each="sgg : ${sggList}"
+                                    th:value="${sgg.sggCd}"
+                                    th:text="${sgg.sggNm}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="right-align">
+                        <button type="submit" class="page-btn">조회</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <div class="card">
         <div class="row" style="justify-content: space-between;">
             <div class="muted">총 <strong th:text="${total}">0</strong> 건</div>
             <div class="muted">페이지 <strong th:text="${page}">1</strong> / <span th:text="${totalPages}">1</span></div>
@@ -75,9 +102,11 @@
         <table class="table">
             <thead>
             <tr>
+                <th>No</th>
                 <th>아파트</th>
                 <th>층</th>
-                <th>전용면적(제곱미터)</th>
+                <th>전용면적(㎡)</th>
+                <th>전용면적(평)</th>
                 <th>금액 (만원)</th>
                 <th>거래일</th>
                 <th>지역 (시군구)</th>
@@ -87,16 +116,18 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="l : ${list}">
+            <tr th:each="l, iter : ${list}">
+                <td th:text="${ ((page ?: 1) - 1) * size + (iter.count) }"></td>
                 <td th:text="${l.aptNm}"></td>
                 <td th:text="${l.floor}"></td>
-                <td th:text="${l.excluUseAr}"></td>
-                <td th:text="${l.dealAmount}"></td>
+                <td th:text="${#numbers.formatDecimal(l.excluUseAr, 1, 2)}" class="num"></td>
+                <td th:text="${#numbers.formatDecimal(((l.excluUseAr * 1.0) / 3.3058), 0, 2)}" class="num"></td>
+                <td th:text="${#numbers.formatInteger(l.dealAmount, 1, 'COMMA')}" class="num"></td>
                 <td th:text="${l.dealDate}"></td>
                 <td th:text="${l.sggNm}"></td>
                 <td th:text="${l.umdNm}"></td>
                 <td th:text="${l.buildYear}"></td>
-                <td th:text="${l.cdealType == null} ? '정상':'취소'"></td>
+                <td th:text="${l.cdealType == null ? '정상':'취소'}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(list)}">
                 <td colspan="7" class="muted">조회 결과가 없습니다.</td>
@@ -105,15 +136,66 @@
         </table>
 
         <!-- 페이지네이션 -->
-        <div class="pagination" th:if="${totalPages > 1}">
-            <a th:each="p : ${#numbers.sequence(1, totalPages)}"
-               th:classappend="${p == page} ? 'page-btn active' : 'page-btn'"
+        <div class="pagination" th:if="${totalPages > 1}"
+             th:with="
+                start=${page - 2 < 2 ? 2 : page - 2},
+                end=${page + 2 > totalPages - 1 ? totalPages - 1 : page + 2}
+            ">
+
+            <!-- 이전 페이지 버튼 -->
+            <a class="page-btn"
+               th:classappend="${page == 1} ? ' disabled'"
                th:href="@{/apt/trades(
-                    sggCd=${param.sggCd},
+                    sggCd=${filter.sggCd},
+                    page=${page - 1},
+                    size=${size}
+               )}"
+               th:if="${page > 1}">&laquo;</a>
+
+            <!-- 1페이지 -->
+            <a th:href="@{/apt/trades(
+                    sggCd=${filter.sggCd},
+                    page=${1},
+                    size=${size}
+                )}"
+               th:classappend="${page == 1} ? 'page-btn active' : 'page-btn'"
+               th:text="1"></a>
+
+            <!-- 왼쪽 ... -->
+            <span th:if="${start > 2}">...</span>
+
+            <!-- 가운데 페이지들 (현재 페이지 앞뒤 2페이지 씩) -->
+            <a th:each="p : ${#numbers.sequence(start, end)}"
+               th:href="@{/apt/trades(
+                    sggCd=${filter.sggCd},
                     page=${p},
                     size=${size}
-          )}"
-               th:text="${p}">1</a>
+                )}"
+               th:classappend="${p == page} ? 'page-btn active' : 'page-btn'"
+               th:text="${p}"></a>
+
+            <!-- 오른쪽 ... -->
+            <span th:if="${end < totalPages - 1}">...</span>
+
+            <!-- 마지막 페이지 (totalPages > 1 일 때만 의미 있음) -->
+            <a th:if="${totalPages > 1}"
+               th:href="@{/apt/trades(
+                    sggCd=${filter.sggCd},
+                    page=${totalPages},
+                    size=${size}
+               )}"
+               th:classappend="${page == totalPages} ? 'page-btn active' : 'page-btn'"
+               th:text="${totalPages}"></a>
+
+            <!-- 다음 페이지 버튼 -->
+            <a class="page-btn"
+               th:classappend="${page == totalPages} ? ' disabled'"
+               th:href="@{/apt/trades(
+                    sggCd=${filter.sggCd},
+                    page=${page + 1},
+                    size=${size}
+               )}"
+               th:if="${page < totalPages}">&raquo;</a>
         </div>
     </div>
 </div>

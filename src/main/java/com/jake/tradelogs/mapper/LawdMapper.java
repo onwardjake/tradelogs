@@ -1,6 +1,7 @@
 package com.jake.tradelogs.mapper;
 
 import com.jake.tradelogs.dto.lawd.LawdItem;
+import com.jake.tradelogs.dto.lawd.SggCdNm;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,4 +14,6 @@ public interface LawdMapper {
     String findLawd5(@Param("lawd5") String lawd5);
 
     List<String> getAllLawd5();
+
+    List<SggCdNm> getAllSggCdNm();
 }

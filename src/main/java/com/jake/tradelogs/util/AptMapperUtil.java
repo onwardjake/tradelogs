@@ -35,7 +35,7 @@ public class AptMapperUtil {
             ati.setAptSeq(MapperUtil.clean(src.aptSeq()));
             ati.setAptDong(MapperUtil.clean(src.aptDong()));
             ati.setFloor(MapperUtil.clean(src.floor()));
-            ati.setExcluUseAr(MapperUtil.clean(src.excluUseAr()));
+            ati.setExcluUseAr(Double.parseDouble(MapperUtil.clean(src.excluUseAr())));
             ati.setBuildYear(MapperUtil.clean(src.buildYear()));
 
             ati.setDealYear(Integer.parseInt(MapperUtil.clean(src.dealYear())));

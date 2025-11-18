@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jake.tradelogs.mapper.LawdMapper">
+    <resultMap id="SggCdNm" type="com.jake.tradelogs.dto.lawd.SggCdNm">
+        <result property="sggCd"        column="lawd5"/>
+        <result property="sggNm"        column="name"/>
+    </resultMap>
 
     <insert id="bulkUpsert">
         INSERT IGNORE INTO lawd_code (
@@ -24,5 +28,9 @@
 
     <select id="getAllLawd5">
         SELECT lawd5 FROM v_lawd5 ORDER BY lawd5 ASC;
+    </select>
+
+    <select id="getAllSggCdNm" resultMap="SggCdNm">
+        SELECT lawd5, name FROM v_lawd5 ORDER BY name ASC;
     </select>
 </mapper>

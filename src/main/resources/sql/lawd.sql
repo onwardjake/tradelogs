@@ -25,6 +25,8 @@ CREATE TABLE IF NOT EXISTS lawd_code (
 
 
 -- 조회용 뷰(중복 제거, 지역주소명추가)
+-- 지역주소명은 읍면동 이름까지 포함하고 있으나,
+-- MIN(locatadd_nm)을 통해 제일 앞 법정동코드 값을 가져오게 하여 시군구 이름만 들어가도록 한다
 CREATE OR REPLACE VIEW v_lawd5 AS
        SELECT
            lawd5,
