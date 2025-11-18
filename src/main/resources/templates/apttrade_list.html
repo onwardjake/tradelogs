@@ -89,9 +89,6 @@
                 </div>
             </form>
         </div>
-    </div>
-
-
 
     <div class="card">
         <div class="row" style="justify-content: space-between;">
@@ -165,7 +162,8 @@
             <span th:if="${start > 2}">...</span>
 
             <!-- 가운데 페이지들 (현재 페이지 앞뒤 2페이지 씩) -->
-            <a th:each="p : ${#numbers.sequence(start, end)}"
+            <a th:if="${totalPages>2}"
+               th:each="p : ${#numbers.sequence(start, end)}"
                th:href="@{/apt/trades(
                     sggCd=${filter.sggCd},
                     page=${p},
