@@ -40,6 +40,13 @@
         <result property="cdealDay"             column="cdeal_day"/>
     </resultMap>
 
+    <!-- 공통 WHERE 절 -->
+<!--    <sql id="AptWhere">-->
+<!--        <where>-->
+
+<!--        </where>-->
+<!--    </sql>-->
+
     <insert id="bulkUpsert">
         <if test="list != null and list.size() > 0">
             INSERT IGNORE INTO apt_trade (
@@ -60,7 +67,7 @@
             </foreach>
         </if>
     </insert>
-       <select id="getAptTradeItems" parameterType="map" resultMap="AptTradeItem">
+       <select id="getAptTradeItems" parameterType="com.jake.tradelogs.dto.apt.AptTradeFilter" resultMap="AptTradeItem">
            SELECT
                a.id,
                l.name AS sggNm,
@@ -107,7 +114,10 @@
                     INNER JOIN v_lawd5 l
                                ON a.sgg_cd = l.lawd5
            WHERE a.sgg_cd = #{sggCd}
-           LIMIT #{limit} OFFSET #{offset}
+               <if test="umdNm != null and umdNm != ''">
+                   AND a.umd_nm = #{umdNm}
+               </if>
+           LIMIT #{numOfRows} OFFSET #{offset}
        </select>
 
     <select id="getCount" parameterType="map" resultType="long">
@@ -115,6 +125,9 @@
             FROM apt_trade
             <if test="sggCd != null and sggCd != ''">
                 WHERE sgg_cd = #{sggCd}
+                    <if test="umdNm != null and umdNm != ''">
+                        AND umd_nm = #{umdNm}
+                    </if>
             </if>
     </select>
 

@@ -1,5 +1,6 @@
 package com.jake.tradelogs.mapper;
 
+import com.jake.tradelogs.dto.apt.AptTradeFilter;
 import com.jake.tradelogs.dto.apt.AptTradeItem;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -11,7 +12,7 @@ import java.util.Map;
 public interface AptMapper {
     int bulkUpsert(@Param("list") List<AptTradeItem> list);
 
-    long getCount(Map<String, Object> params);
+    long getCount(AptTradeFilter filter);
 
-    List<AptTradeItem> getAptTradeItems(Map<String, Object> params);
+    List<AptTradeItem> getAptTradeItems(AptTradeFilter filter);
 }

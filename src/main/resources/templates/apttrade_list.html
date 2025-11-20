@@ -24,7 +24,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
         }
         .wrap { max-width: 1200px; margin: 0 auto; }
-        h1 { font-size: 20px; margin: 0 0 16px; color: #f0f3f8; }
+        h1 { font-numOfRows: 20px; margin: 0 0 16px; color: #f0f3f8; }
         .card {
             background: var(--panel); border: 1px solid var(--border);
             border-radius: 12px; padding: 16px; margin-bottom: 16px;
@@ -33,7 +33,7 @@
         .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
         .filter-grid {grid-template-columns: repeat(6, 1fr); align-items: end;}
         .right-align {text-align: right;}
-        label { display:block; font-size: 12px; color: var(--sub); margin-bottom:6px;}
+        label { display:block; font-numOfRows: 12px; color: var(--sub); margin-bottom:6px;}
         select, input[type=number] {
             width: 100%; background: var(--muted); color: var(--text);
             border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
@@ -51,7 +51,7 @@
         }
         .table th, .table td {
             border-bottom: 1px solid var(--border);
-            padding: 10px 8px; font-size: 13px; text-align: left;
+            padding: 10px 8px; font-numOfRows: 13px; text-align: left;
         }
         .table td.num {text-align: right; font-variant-numeric: tabular-nums; /* 숫자 정렬 안정적으로 */}
         .table th { color: #cbd5e1; font-weight: 600; background: #121821; position: sticky; top:0;}
@@ -62,7 +62,7 @@
             border-radius: 8px; text-decoration: none;
         }
         .page-btn.active { background: var(--accent); color: #10121a; border-color: transparent; }
-        .hint { font-size: 12px; color: var(--sub); }
+        .hint { font-numOfRows: 12px; color: var(--sub); }
     </style>
 </head>
 <body>
@@ -93,7 +93,7 @@
     <div class="card">
         <div class="row" style="justify-content: space-between;">
             <div class="muted">총 <strong th:text="${total}">0</strong> 건</div>
-            <div class="muted">페이지 <strong th:text="${page}">1</strong> / <span th:text="${totalPages}">1</span></div>
+            <div class="muted">페이지 <strong th:text="${filter.page}">1</strong> / <span th:text="${totalPages}">1</span></div>
         </div>
 
         <table class="table">
@@ -114,7 +114,7 @@
             </thead>
             <tbody>
             <tr th:each="l, iter : ${list}">
-                <td th:text="${ ((page ?: 1) - 1) * size + (iter.count) }"></td>
+                <td th:text="${ ((filter.page ?: 1) - 1) * filter.numOfRows + (iter.count) }"></td>
                 <td th:text="${l.aptNm}"></td>
                 <td th:text="${l.floor}"></td>
                 <td th:text="${#numbers.formatDecimal(l.excluUseAr, 1, 2)}" class="num"></td>
@@ -135,27 +135,29 @@
         <!-- 페이지네이션 -->
         <div class="pagination" th:if="${totalPages > 1}"
              th:with="
-                start=${page - 2 < 2 ? 2 : page - 2},
-                end=${page + 2 > totalPages - 1 ? totalPages - 1 : page + 2}
+                start=${filter.page - 2 < 2 ? 2 : filter.page - 2},
+                end=${filter.page + 2 > totalPages - 1 ? totalPages - 1 : filter.page + 2}
             ">
 
             <!-- 이전 페이지 버튼 -->
             <a class="page-btn"
-               th:classappend="${page == 1} ? ' disabled'"
+               th:classappend="${filter.page == 1} ? ' disabled'"
                th:href="@{/apt/trades(
                     sggCd=${filter.sggCd},
-                    page=${page - 1},
-                    size=${size}
+                    umdNm=${filter.umdNm},
+                    page=${filter.page - 1},
+                    numOfRows=${filter.numOfRows}
                )}"
-               th:if="${page > 1}">&laquo;</a>
+               th:if="${filter.page > 1}">&laquo;</a>
 
             <!-- 1페이지 -->
             <a th:href="@{/apt/trades(
                     sggCd=${filter.sggCd},
+                    umdNm=${filter.umdNm},
                     page=${1},
-                    size=${size}
+                    numOfRows=${filter.numOfRows}
                 )}"
-               th:classappend="${page == 1} ? 'page-btn active' : 'page-btn'"
+               th:classappend="${filter.page == 1} ? 'page-btn active' : 'page-btn'"
                th:text="1"></a>
 
             <!-- 왼쪽 ... -->
@@ -166,10 +168,11 @@
                th:each="p : ${#numbers.sequence(start, end)}"
                th:href="@{/apt/trades(
                     sggCd=${filter.sggCd},
+                    umdNm=${filter.umdNm},
                     page=${p},
-                    size=${size}
+                    numOfRows=${filter.numOfRows}
                 )}"
-               th:classappend="${p == page} ? 'page-btn active' : 'page-btn'"
+               th:classappend="${p == filter.page} ? 'page-btn active' : 'page-btn'"
                th:text="${p}"></a>
 
             <!-- 오른쪽 ... -->
@@ -179,21 +182,23 @@
             <a th:if="${totalPages > 1}"
                th:href="@{/apt/trades(
                     sggCd=${filter.sggCd},
+                    umdNm=${filter.umdNm},
                     page=${totalPages},
-                    size=${size}
+                    numOfRows=${filter.numOfRows}
                )}"
-               th:classappend="${page == totalPages} ? 'page-btn active' : 'page-btn'"
+               th:classappend="${filter.page == totalPages} ? 'page-btn active' : 'page-btn'"
                th:text="${totalPages}"></a>
 
             <!-- 다음 페이지 버튼 -->
             <a class="page-btn"
-               th:classappend="${page == totalPages} ? ' disabled'"
+               th:classappend="${filter.page == totalPages} ? ' disabled'"
                th:href="@{/apt/trades(
                     sggCd=${filter.sggCd},
-                    page=${page + 1},
-                    size=${size}
+                    umdNm=${filter.umdNm},
+                    page=${filter.page + 1},
+                    numOfRows=${filter.numOfRows}
                )}"
-               th:if="${page < totalPages}">&raquo;</a>
+               th:if="${filter.page < totalPages}">&raquo;</a>
         </div>
     </div>
 </div>
